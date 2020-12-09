@@ -7,6 +7,9 @@ namespace Craftzing\Laravel\LokaliseWebhooks;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 
+/**
+ * @internal This implementation should only be used for testing purposes.
+ */
 final class FakeConfig implements Config
 {
     private string $lokaliseXSecret;

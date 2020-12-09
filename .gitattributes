@@ -6,4 +6,5 @@
 /README.md export-ignore
 /src/Testing/ export-ignore
 /src/**/*Test.php export-ignore
+/src/**/Fake*.php export-ignore
 /src/**/*TestCase.php export-ignore

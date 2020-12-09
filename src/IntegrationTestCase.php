@@ -4,33 +4,53 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\LokaliseWebhooks;
 
+use Craftzing\Laravel\LokaliseWebhooks\Exceptions\FakeExceptionHandler;
+use CreateWebhookCallsTable;
+use Illuminate\Support\Facades\Bus;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class IntegrationTestCase extends OrchestraTestCase
 {
-    protected Config $config;
     protected bool $shouldFakeConfig = true;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setUpDatabase();
+    }
+
+    protected function setUpDatabase(): void
+    {
+        include_once __DIR__ .
+            '/../vendor/spatie/laravel-webhook-client/database/migrations/create_webhook_calls_table.php.stub';
+
+        (new CreateWebhookCallsTable())->up();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getEnvironmentSetUp($app): void
+    {
+        $app['config']->set('database.default', 'sqlite');
+        $app['config']->set('database.connections.sqlite', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
+    }
 
     protected function setUpTraits(): void
     {
         $uses = parent::setUpTraits();
 
-        $this->fakeConfig();
-    }
+        Bus::fake();
+        FakeExceptionHandler::swap($this->app);
 
-    private function fakeConfig(): void
-    {
         if ($this->shouldFakeConfig) {
-            $this->config = FakeConfig::swap($this->app);
+            FakeConfig::swap($this->app);
         }
-    }
-
-    /**
-     * @after
-     */
-    public function unsetConfig(): void
-    {
-        unset($this->config);
     }
 
     protected function getPackageProviders($app): array
