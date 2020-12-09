@@ -16,6 +16,8 @@ use function config;
 
 final class LokaliseWebhooksServiceProviderTest extends IntegrationTestCase
 {
+    protected bool $shouldFakeConfig = false;
+
     /**
      * @test
      */
