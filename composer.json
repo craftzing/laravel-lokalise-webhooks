@@ -1,0 +1,38 @@
+{
+    "name": "craftzing/laravel-lokalise-webhooks",
+    "description": "Handle Lokalise webhooks in a Laravel app",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rémi Pelhate",
+            "email": "remi.pelhate@craftzing.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/support": "^7.0|^8.0",
+        "spatie/laravel-webhook-client": "^2.7.4"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0|^6.0",
+        "phpunit/phpunit": "^9.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Craftzing\\Laravel\\LokaliseWebhooks\\": "src"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Craftzing\\Laravel\\LokaliseWebhooks\\LokaliseWebhooksServiceProvider"
+            ]
+        }
+    }
+}

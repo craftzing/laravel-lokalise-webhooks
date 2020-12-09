@@ -1,0 +1,8 @@
+* text=auto
+
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/phpunit.xml.dist export-ignore
+/README.md
+/src/**/*Test.php export-ignore
+/src/**/*TestCase.php export-ignore
