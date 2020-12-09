@@ -6,7 +6,7 @@ namespace Craftzing\Laravel\LokaliseWebhooks;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
-abstract class TestCase extends OrchestraTestCase
+abstract class IntegrationTestCase extends OrchestraTestCase
 {
     protected function getPackageProviders($app): array
     {

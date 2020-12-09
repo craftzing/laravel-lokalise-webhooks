@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 use function config;
 
-final class LokaliseWebhooksServiceProviderTest extends TestCase
+final class LokaliseWebhooksServiceProviderTest extends IntegrationTestCase
 {
     /**
      * @test
