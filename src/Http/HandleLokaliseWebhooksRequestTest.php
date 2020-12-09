@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\LokaliseWebhooks\Http;
 
 use Craftzing\Laravel\LokaliseWebhooks\Config;
+use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnexpectedWebhookPayload;
 use Craftzing\Laravel\LokaliseWebhooks\IntegrationTestCase;
 use Craftzing\Laravel\LokaliseWebhooks\ProcessLokaliseWebhook;
+use Exception;
 use Generator;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Bus;
@@ -31,15 +33,29 @@ final class HandleLokaliseWebhooksRequestTest extends IntegrationTestCase
     public function invalidIncomingWebhooks(): Generator
     {
         yield 'It fails when the secret header is missing' => [
-            [],
+            WebhookFailed::invalidSignature(),
+            fn () => [],
         ];
 
         yield 'It fails when the secret header is empty' => [
-            [self::EXPECTED_SECRET_HEADER_NAME => ''],
+            WebhookFailed::invalidSignature(),
+            fn () => [self::EXPECTED_SECRET_HEADER_NAME => ''],
         ];
 
         yield 'It fails when the secret header does not match the expected one' => [
-            [self::EXPECTED_SECRET_HEADER_NAME => 'some-unexpected-secret'],
+            WebhookFailed::invalidSignature(),
+            fn () => [self::EXPECTED_SECRET_HEADER_NAME => 'some-unexpected-secret'],
+        ];
+
+        yield 'The webhook payload is missing an event property' => [
+            UnexpectedWebhookPayload::missingEvent(),
+            fn (string $secret) => [self::EXPECTED_SECRET_HEADER_NAME => $secret],
+        ];
+
+        yield 'The webhook payload is has an empty event property' => [
+            UnexpectedWebhookPayload::missingEvent(),
+            fn (string $secret) => [self::EXPECTED_SECRET_HEADER_NAME => $secret],
+            ['event' => ''],
         ];
     }
 
@@ -47,11 +63,15 @@ final class HandleLokaliseWebhooksRequestTest extends IntegrationTestCase
      * @test
      * @dataProvider invalidIncomingWebhooks
      */
-    public function itFailsWhenTheIncomingWebhookIsInvalid(array $headers): void
-    {
-        $this->expectExceptionObject(WebhookFailed::invalidSignature());
+    public function itFailsWhenTheIncomingWebhookIsInvalid(
+        Exception $exception,
+        callable $headers,
+        array $payload = []
+    ): void {
+        $this->expectExceptionObject($exception);
+        $headers = $headers($this->app[Config::class]->lokaliseXSecret());
 
-        $response = $this->post(self::URI, [], $headers);
+        $response = $this->post(self::URI, $payload, $headers);
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         Bus::assertNotDispatched(ProcessLokaliseWebhook::class);
@@ -62,9 +82,10 @@ final class HandleLokaliseWebhooksRequestTest extends IntegrationTestCase
      */
     public function itCanHandleValidIncomingWebhooks(): void
     {
-        $response = $this->post(self::URI, [], [
-            self::EXPECTED_SECRET_HEADER_NAME => $this->app[Config::class]->lokaliseXSecret(),
-        ]);
+        $response = $this->post(self::URI,
+            ['event' => 'something.happened'],
+            [self::EXPECTED_SECRET_HEADER_NAME => $this->app[Config::class]->lokaliseXSecret()],
+        );
 
         $response->assertOk();
         Bus::assertDispatched(ProcessLokaliseWebhook::class);

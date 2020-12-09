@@ -12,7 +12,7 @@ final class AppMisconfigured extends Exception
     {
         return new self(
             'Please make sure to provide a Lokalise X-Secret by either setting the ' .
-            '"lokalise-webhooks.x_secret" config or the according environment variable.'
+            '`lokalise-webhooks.x_secret` config or the according environment variable.'
         );
     }
 }
