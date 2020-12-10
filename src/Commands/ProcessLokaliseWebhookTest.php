@@ -53,11 +53,7 @@ final class ProcessLokaliseWebhookTest extends IntegrationTestCase
 
         Event::assertDispatched(
             'lokalise-webhooks::something.happened',
-            function (string $event, WebhookCall $expectedWebhookCall) use ($webhookCall): bool {
-                $this->assertTrue($webhookCall->is($expectedWebhookCall));
-
-                return true;
-            },
+            fn (string $event, WebhookCall $expectedWebhookCall) => $webhookCall->is($expectedWebhookCall),
         );
     }
 }

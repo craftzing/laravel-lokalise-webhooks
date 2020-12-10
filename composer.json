@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
+        "ext-zip": "*",
         "illuminate/support": "^7.0|^8.0",
         "spatie/laravel-webhook-client": "^2.7.4"
     },
