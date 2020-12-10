@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\LokaliseWebhooks\Http\Requests;
 
-use Craftzing\Laravel\LokaliseWebhooks\Config;
 use Craftzing\Laravel\LokaliseWebhooks\Commands\ProcessLokaliseWebhook;
+use Craftzing\Laravel\LokaliseWebhooks\Config;
 use Craftzing\Laravel\LokaliseWebhooks\Http\LokaliseSignatureValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

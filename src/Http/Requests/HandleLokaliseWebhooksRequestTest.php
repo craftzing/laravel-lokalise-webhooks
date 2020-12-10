@@ -24,7 +24,7 @@ final class HandleLokaliseWebhooksRequestTest extends IntegrationTestCase
      */
     public function registerWebhooksHandlerRoute(): void
     {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationCreated(function (): void {
             $this->app[Router::class]->lokaliseWebhooks(self::URI);
         });
     }
