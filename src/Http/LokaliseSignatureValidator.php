@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\LokaliseWebhooks;
+namespace Craftzing\Laravel\LokaliseWebhooks\Http;
 
 use Illuminate\Http\Request;
 use Spatie\WebhookClient\SignatureValidator\SignatureValidator;

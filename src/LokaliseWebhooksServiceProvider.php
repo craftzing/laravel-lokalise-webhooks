@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\LokaliseWebhooks;
 
-use Craftzing\Laravel\LokaliseWebhooks\Http\HandleLokaliseWebhooksRequest;
+use Craftzing\Laravel\LokaliseWebhooks\Http\Requests\HandleLokaliseWebhooksRequest;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 

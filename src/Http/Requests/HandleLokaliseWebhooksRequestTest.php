@@ -80,7 +80,7 @@ final class HandleLokaliseWebhooksRequestTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCanHandleValidIncomingWebhooks(): void
+    public function itCanHandleIncomingWebhooks(): void
     {
         $response = $this->post(self::URI,
             ['event' => 'something.happened'],

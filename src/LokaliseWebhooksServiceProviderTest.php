@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\LokaliseWebhooks;
 
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\AppMisconfigured;
-use Craftzing\Laravel\LokaliseWebhooks\Http\HandleLokaliseWebhooksRequest;
+use Craftzing\Laravel\LokaliseWebhooks\Http\Requests\HandleLokaliseWebhooksRequest;
 use Exception;
 use Generator;
 use Illuminate\Routing\Route;
