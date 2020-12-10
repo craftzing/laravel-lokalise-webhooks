@@ -7,6 +7,7 @@ namespace Craftzing\Laravel\LokaliseWebhooks;
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\FakeExceptionHandler;
 use CreateWebhookCallsTable;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class IntegrationTestCase extends OrchestraTestCase
@@ -46,6 +47,7 @@ abstract class IntegrationTestCase extends OrchestraTestCase
         $uses = parent::setUpTraits();
 
         Bus::fake();
+        Event::fake();
         FakeExceptionHandler::swap($this->app);
 
         if ($this->shouldFakeConfig) {
@@ -56,5 +58,14 @@ abstract class IntegrationTestCase extends OrchestraTestCase
     protected function getPackageProviders($app): array
     {
         return [LokaliseWebhooksServiceProvider::class];
+    }
+
+    /**
+     * @param object $class
+     * @return mixed
+     */
+    public function handle(object $class)
+    {
+        return $this->app->call([$class, 'handle']);
     }
 }

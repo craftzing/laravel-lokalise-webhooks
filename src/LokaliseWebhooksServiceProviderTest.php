@@ -52,7 +52,7 @@ final class LokaliseWebhooksServiceProviderTest extends IntegrationTestCase
      * @test
      * @dataProvider misconfiguredApp
      */
-    public function itCannotResolveTheConfigWhenTheAppIsMisconfigured(array $config, Exception $exception): void
+    public function itCannotBindTheConfigWhenTheAppIsMisconfigured(array $config, Exception $exception): void
     {
         config($config);
 
@@ -64,7 +64,7 @@ final class LokaliseWebhooksServiceProviderTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itEnablesTheContainerToResolveTheConfig(): void
+    public function itBindsAConfigInstance(): void
     {
         config(['lokalize-webhooks.x_secret' => $xSecret = Str::random()]);
 
