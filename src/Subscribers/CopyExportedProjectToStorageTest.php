@@ -19,16 +19,25 @@ final class CopyExportedProjectToStorageTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itCanBeRegisteredAsASubscriberForTheProjectExportedEvent(): void
+    public function itCanBeRegisteredAsAQueuedSubscriberForTheProjectExportedEvent(): void
     {
         IlluminateEvent::subscribe(CopyExportedProjectToStorage::class);
 
         IlluminateEvent::dispatch(Event::PROJECT_EXPORTED, new WebhookCall());
 
-        Queue::assertPushed(
-            CallQueuedListener::class,
-            fn (CallQueuedListener $listener) => $listener->class === CopyExportedProjectToStorage::class,
-        );
+        Queue::assertPushed(CallQueuedListener::class, function (CallQueuedListener $listener) {
+            return $listener->class === CopyExportedProjectToStorage::class;
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function itCanBeResolvedFromTheContainer(): void
+    {
+        $listener = $this->app[CopyExportedProjectToStorage::class];
+
+        $this->assertInstanceOf(CopyExportedProjectToStorage::class, $listener);
     }
 
     /**

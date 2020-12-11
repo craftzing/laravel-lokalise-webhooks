@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\LokaliseWebhooks\Http;
+namespace Craftzing\Laravel\LokaliseWebhooks\Http\Requests;
 
 use Craftzing\Laravel\LokaliseWebhooks\Commands\ProcessLokaliseWebhook;
 use Craftzing\Laravel\LokaliseWebhooks\Config;

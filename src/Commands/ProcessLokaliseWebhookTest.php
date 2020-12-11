@@ -15,14 +15,14 @@ use function compact;
 
 final class ProcessLokaliseWebhookTest extends IntegrationTestCase
 {
-    public function invalidPayloads(): Generator
+    public function invalidWebhookPayloads(): Generator
     {
-        yield 'The webhook payload is missing an event property' => [
+        yield 'Missing an event property' => [
             [],
             UnexpectedWebhookPayload::missingEvent(),
         ];
 
-        yield 'The webhook payload is has an empty event property' => [
+        yield 'Event property is missing' => [
             ['event' => ''],
             UnexpectedWebhookPayload::missingEvent(),
         ];
@@ -30,9 +30,9 @@ final class ProcessLokaliseWebhookTest extends IntegrationTestCase
 
     /**
      * @test
-     * @dataProvider invalidPayloads
+     * @dataProvider invalidWebhookPayloads
      */
-    public function itFailsWhenThePayloadIsInvalid(array $payload, Exception $exception): void
+    public function itFailsWhenTheWebhookPayloadIsInvalid(array $payload, Exception $exception): void
     {
         $this->expectExceptionObject($exception);
 
@@ -46,8 +46,11 @@ final class ProcessLokaliseWebhookTest extends IntegrationTestCase
      */
     public function itEmitsAnEvent(): void
     {
-        $payload = ['event' => 'something.happened'];
-        $webhookCall = new WebhookCall(compact('payload'));
+        $webhookCall = new WebhookCall([
+            'payload' => [
+                'event' => 'something.happened',
+            ],
+        ]);
 
         $this->handle(new ProcessLokaliseWebhook($webhookCall));
 
