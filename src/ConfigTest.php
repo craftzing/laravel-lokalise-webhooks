@@ -18,12 +18,12 @@ final class ConfigTest extends IntegrationTestCase
     public function misconfiguredApp(): Generator
     {
         yield 'Missing Lokalise X-Secret' => [
-            ['lokalize-webhooks.x_secret' => null],
+            ['lokalise-webhooks.x_secret' => null],
             AppMisconfigured::missingLokaliseXSecret(),
         ];
 
         yield 'Empty Lokalise X-Secret' => [
-            ['lokalize-webhooks.x_secret' => ''],
+            ['lokalise-webhooks.x_secret' => ''],
             AppMisconfigured::missingLokaliseXSecret(),
         ];
     }
@@ -46,7 +46,7 @@ final class ConfigTest extends IntegrationTestCase
      */
     public function itCanBeResolvedFromTheContainer(): void
     {
-        config(['lokalize-webhooks.x_secret' => $xSecret = Str::random()]);
+        config(['lokalise-webhooks.x_secret' => $xSecret = Str::random()]);
 
         $config = $this->app[Config::class];
 

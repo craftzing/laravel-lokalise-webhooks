@@ -13,7 +13,7 @@ final class IlluminateConfig implements Config
 
     public function __construct(Repository $config)
     {
-        $this->lokaliseXSecret = $config->get('lokalize-webhooks.x_secret') ?: '';
+        $this->lokaliseXSecret = $config->get('lokalise-webhooks.x_secret') ?: '';
 
         $this->guardAgainstMissingLokaliseXSecret();
     }
