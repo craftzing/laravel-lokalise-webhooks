@@ -19,7 +19,7 @@ final class LokaliseWebhooksServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 self::CONFIG_PATH => $this->app->configPath('lokalise-webhooks.php'),
-            ], 'lokalise-webhooks');
+            ], 'config');
         }
 
         $router::macro('lokaliseWebhooks', function (string $uri) use ($router): void {
