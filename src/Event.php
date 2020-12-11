@@ -28,6 +28,7 @@ final class Event
     public const PROJECT_TASK_CLOSED = self::NAMESPACE . 'project.task.closed';
     public const PROJECT_TASK_DELETED = self::NAMESPACE . 'project.task.deleted';
     public const PROJECT_TASK_LANGUAGE_CLOSED = self::NAMESPACE . 'project.task.language.closed';
+    public const PING = self::NAMESPACE . 'ping';
 
     private string $name;
 
@@ -40,6 +41,13 @@ final class Event
     {
         if ($event = ($webhookCall->payload['event'] ?? null)) {
             return new self(self::NAMESPACE . $event);
+        }
+
+        // Lokalise uses a ping event to ensure a webhook actually works. This event has a different payload
+        // structure compared to the actual webhook events. We should ba able to handle these as well as
+        // Lokalise won't let you configure webhook handlers that don't return a successful response.
+        if ($webhookCall->payload === ['ping']) {
+            return new self(self::PING);
         }
 
         throw UnexpectedWebhookPayload::missingEvent();

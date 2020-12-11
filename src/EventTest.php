@@ -78,6 +78,17 @@ final class EventTest extends TestCase
     /**
      * @test
      */
+    public function itCanBeConstructedFromAPingWebhookCall(): void
+    {
+        $event = Event::fromWebhookCall(new WebhookCall(['payload' => ['ping']]));
+
+        $this->assertInstanceOf(Event::class, $event);
+        $this->assertSame("lokalise-webhooks::ping", $event->name());
+    }
+
+    /**
+     * @test
+     */
     public function itCanBeCastedToAString(): void
     {
         $event = Event::fromWebhookCall($this->webhookCall);

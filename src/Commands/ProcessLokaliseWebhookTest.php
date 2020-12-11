@@ -44,7 +44,7 @@ final class ProcessLokaliseWebhookTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itEmitsAnEvent(): void
+    public function itCanHandleIncomingWebhooks(): void
     {
         $webhookCall = new WebhookCall([
             'payload' => [
@@ -56,6 +56,23 @@ final class ProcessLokaliseWebhookTest extends IntegrationTestCase
 
         Event::assertDispatched(
             'lokalise-webhooks::something.happened',
+            fn (string $event, WebhookCall $expectedWebhookCall) => $webhookCall->is($expectedWebhookCall),
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function itCanHandleIncomingPingEvents(): void
+    {
+        $webhookCall = new WebhookCall([
+            'payload' => ['ping'],
+        ]);
+
+        $this->handle(new ProcessLokaliseWebhook($webhookCall));
+
+        Event::assertDispatched(
+            'lokalise-webhooks::ping',
             fn (string $event, WebhookCall $expectedWebhookCall) => $webhookCall->is($expectedWebhookCall),
         );
     }
