@@ -1,9 +1,9 @@
 ---
-name: Run tests
+name: Quality assurance
 on: [push, pull_request]
 
 jobs:
-  phpunit:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -17,7 +17,7 @@ jobs:
             testbench: 6.*
           - laravel: 7.*
             testbench: 5.*
-    name: PHPUnit tests on PHP${{ matrix.php }} with Laravel ${{ matrix.laravel }} (${{ matrix.dependency-version }}) running on ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} with Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,11 +27,26 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
-          coverage: none
+          coverage: xdebug
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+
       - name: Run tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+
+      - name: Run tests & publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+          coverageLocations: |
+            ${{github.workspace}}/*.clover:clover
+          debug: true
+
+      - name: Run PHPStan analysis
+        run: vendor/bin/phpstan analyse --memory-limit=-1
+        if: ${{ matrix.php == '7.4' }}

@@ -1,0 +1,9 @@
+parameters:
+	level: 6
+	paths:
+		- src
+	excludes_analyse:
+	    - ./**/*Test.php
+	    - ./**/*TestCase.php
+	ignoreErrors:
+	    - '#Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem::path\(\).#'

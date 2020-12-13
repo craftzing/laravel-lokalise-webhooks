@@ -31,7 +31,8 @@ final class CopyExportedProjectToStorage implements ShouldQueue
 
     public function __invoke(WebhookCall $webhookCall): void
     {
-        $archiveFileName = $this->copyExportFromAwsBucket($webhookCall->payload['export']['filename']);
+        $payload = $webhookCall->getAttribute('payload');
+        $archiveFileName = $this->copyExportFromAwsBucket($payload['export']['filename']);
 
         $this->extractArchive($archiveFileName);
         $this->cleanupArchive($archiveFileName);

@@ -10,7 +10,7 @@
         </exclude>
     </coverage>
     <testsuites>
-        <testsuite name="Laravel Lokalise Proxy">
+        <testsuite name="Laravel Lokalise Webhooks">
             <directory suffix="Test.php">src/</directory>
         </testsuite>
     </testsuites>

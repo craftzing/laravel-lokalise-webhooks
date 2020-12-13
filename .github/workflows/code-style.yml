@@ -1,5 +1,5 @@
 ---
-name: Fix code style violations
+name: Code style
 on: [push]
 
 jobs:

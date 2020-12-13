@@ -39,14 +39,16 @@ final class Event
 
     public static function fromWebhookCall(WebhookCall $webhookCall): self
     {
-        if ($event = ($webhookCall->payload['event'] ?? null)) {
+        $payload = $webhookCall->getAttribute('payload') ?: [];
+
+        if ($event = ($payload['event'] ?? null)) {
             return new self(self::NAMESPACE . $event);
         }
 
         // Lokalise uses a ping event to ensure a webhook actually works. This event has a different payload
         // structure compared to the actual webhook events. We should ba able to handle these as well as
         // Lokalise won't let you configure webhook handlers that don't return a successful response.
-        if ($webhookCall->payload === ['ping']) {
+        if ($payload === ['ping']) {
             return new self(self::PING);
         }
 
