@@ -7,6 +7,7 @@
         <exclude>
             <directory suffix="Test.php">src/</directory>
             <directory suffix="TestCase.php">src/</directory>
+            <directory>src/Testing/</directory>
         </exclude>
     </coverage>
     <testsuites>
