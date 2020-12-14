@@ -13,8 +13,11 @@ final class UnableToCopyExportFileToStorage extends RuntimeException
         return new self('Something went wrong while streaming the export to storage disk.');
     }
 
-    public static function extractingArchiveFailed(string $pathToArchive): self
+    public static function archiveCouldNotBeOpened(string $pathToArchive, int $errorCode): self
     {
-        return new self("Archive `$pathToArchive` could not be extracted.");
+        return new self(
+            "Opening the archive `$pathToArchive` failed with error code `$errorCode`. " .
+            'Check https://www.php.net/manual/en/ziparchive.open.php for more info.'
+        );
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\LokaliseWebhooks;
 
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\AppMisconfigured;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
 use Illuminate\Support\Str;

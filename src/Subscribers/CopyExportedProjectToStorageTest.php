@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\LokaliseWebhooks\Subscribers;
 
 use Craftzing\Laravel\LokaliseWebhooks\Event;
-use Craftzing\Laravel\LokaliseWebhooks\IntegrationTestCase;
+use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnableToCopyExportFileToStorage;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\Doubles\FakeFilesystem;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\IntegrationTestCase;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Support\Facades\Event as IlluminateEvent;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Spatie\WebhookClient\Models\WebhookCall;
+use ZipArchive;
 
 final class CopyExportedProjectToStorageTest extends IntegrationTestCase
 {
+    private const FAKE_REMOTE_PATH = __DIR__ . '/../../stubs/';
+
     protected bool $shouldFakeEvents = false;
 
     /**
@@ -60,5 +65,49 @@ final class CopyExportedProjectToStorageTest extends IntegrationTestCase
         // extract it's contents and eventually cleanup the archive itself...
         Storage::assertExists(['en.json', 'nl.json']);
         Storage::assertMissing('Project-export.zip');
+    }
+
+    /**
+     * @test
+     */
+    public function itFailsWhenTheExportedProjectCouldNotBeCopiedToStorage(): void
+    {
+        $this->expectExceptionObject(UnableToCopyExportFileToStorage::streamError());
+
+        $filesystem = FakeFilesystem::failToWrite();
+        $webhookCall = new WebhookCall([
+            'payload' => [
+                'export' => [
+                    'filename' => 'Project-export.zip',
+                ],
+            ],
+        ]);
+
+        (new CopyExportedProjectToStorage($filesystem, self::FAKE_REMOTE_PATH))($webhookCall);
+    }
+
+    /**
+     * @test
+     */
+    public function itFailsWhenTheExportedProjectArchiveCouldNotBeOpened(): void
+    {
+        $filesystem = new FakeFilesystem();
+
+        $this->expectExceptionObject(
+            UnableToCopyExportFileToStorage::archiveCouldNotBeOpened(
+                $filesystem->root . 'Project-export',
+                ZipArchive::CM_DEFLATE64,
+            ),
+        );
+
+        $webhookCall = new WebhookCall([
+            'payload' => [
+                'export' => [
+                    'filename' => 'Project-export',
+                ],
+            ],
+        ]);
+
+        (new CopyExportedProjectToStorage($filesystem, self::FAKE_REMOTE_PATH))($webhookCall);
     }
 }

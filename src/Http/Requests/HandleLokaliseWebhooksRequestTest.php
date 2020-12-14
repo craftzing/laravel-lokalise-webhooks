@@ -6,7 +6,7 @@ namespace Craftzing\Laravel\LokaliseWebhooks\Http\Requests;
 
 use Craftzing\Laravel\LokaliseWebhooks\Commands\ProcessLokaliseWebhook;
 use Craftzing\Laravel\LokaliseWebhooks\Config;
-use Craftzing\Laravel\LokaliseWebhooks\IntegrationTestCase;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
 use Illuminate\Routing\Router;

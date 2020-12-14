@@ -18,15 +18,15 @@ use function pathinfo;
 
 final class CopyExportedProjectToStorage implements ShouldQueue
 {
-    private const AWS_BUCKET_URI = 'http://s3-eu-west-1.amazonaws.com/lokalise-assets/';
+    private const REMOTE_AWS_BUCKET = 'http://s3-eu-west-1.amazonaws.com/lokalise-assets/';
 
     private Filesystem $storage;
-    private string $remoteUri;
+    private string $remote;
 
-    public function __construct(Filesystem $storage, string $remoteUri = self::AWS_BUCKET_URI)
+    public function __construct(Filesystem $storage, string $remote = self::REMOTE_AWS_BUCKET)
     {
         $this->storage = $storage;
-        $this->remoteUri = $remoteUri;
+        $this->remote = $remote;
     }
 
     public function __invoke(WebhookCall $webhookCall): void
@@ -40,15 +40,15 @@ final class CopyExportedProjectToStorage implements ShouldQueue
 
     private function copyExportFromAwsBucket(string $exportFileName): string
     {
-        $pathToExport = $this->remoteUri . $exportFileName;
+        $pathToExport = $this->remote . $exportFileName;
         $archiveFileName = pathinfo($pathToExport)['basename'];
         $stream = fopen($pathToExport, 'r');
 
-        if ($this->storage->put($archiveFileName, $stream)) {
-            fclose($stream);
-        } else {
+        if (! $this->storage->put($archiveFileName, $stream)) {
             throw UnableToCopyExportFileToStorage::streamError();
         }
+
+        fclose($stream);
 
         return $archiveFileName;
     }
@@ -56,13 +56,17 @@ final class CopyExportedProjectToStorage implements ShouldQueue
     private function extractArchive(string $archiveFileName): void
     {
         $zip = new ZipArchive();
+        $openResponse = $zip->open($this->storage->path($archiveFileName));
 
-        if ($zip->open($this->storage->path($archiveFileName))) {
-            $zip->extractTo($this->storage->path(''));
-            $zip->close();
-        } else {
-            throw UnableToCopyExportFileToStorage::extractingArchiveFailed($this->storage->path($archiveFileName));
+        if ($openResponse !== true) {
+            throw UnableToCopyExportFileToStorage::archiveCouldNotBeOpened(
+                $this->storage->path($archiveFileName),
+                $openResponse,
+            );
         }
+
+        $zip->extractTo($this->storage->path(''));
+        $zip->close();
     }
 
     private function cleanupArchive(string $archiveFileName): void

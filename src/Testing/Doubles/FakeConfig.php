@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\LokaliseWebhooks;
+namespace Craftzing\Laravel\LokaliseWebhooks\Testing\Doubles;
 
+use Craftzing\Laravel\LokaliseWebhooks\Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 

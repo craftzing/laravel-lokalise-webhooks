@@ -5,5 +5,6 @@ parameters:
 	excludes_analyse:
 	    - ./**/*Test.php
 	    - ./**/*TestCase.php
+	    - ./**/Fake*.php
 	ignoreErrors:
 	    - '#Call to an undefined method Illuminate\\Contracts\\Filesystem\\Filesystem::path\(\).#'

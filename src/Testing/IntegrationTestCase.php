@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Craftzing\Laravel\LokaliseWebhooks;
+namespace Craftzing\Laravel\LokaliseWebhooks\Testing;
 
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\FakeExceptionHandler;
+use Craftzing\Laravel\LokaliseWebhooks\LokaliseWebhooksServiceProvider;
 use Craftzing\Laravel\LokaliseWebhooks\Subscribers\CopyExportedProjectToStorage;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\Doubles\FakeConfig;
 use CreateWebhookCallsTable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
@@ -17,6 +19,7 @@ abstract class IntegrationTestCase extends OrchestraTestCase
 {
     protected bool $shouldFakeEvents = true;
     protected bool $shouldFakeConfig = true;
+    protected bool $shouldFakeListeners = true;
 
     public function setUp(): void
     {
@@ -28,15 +31,13 @@ abstract class IntegrationTestCase extends OrchestraTestCase
     protected function setUpDatabase(): void
     {
         include_once __DIR__ .
-            '/../vendor/spatie/laravel-webhook-client/database/migrations/create_webhook_calls_table.php.stub';
+            '/../../vendor/spatie/laravel-webhook-client/database/migrations/create_webhook_calls_table.php.stub';
 
         (new CreateWebhookCallsTable())->up();
     }
 
-    protected function setUpTraits(): void
+    protected function setUpTraits(): array
     {
-        $uses = parent::setUpTraits();
-
         Bus::fake();
         Queue::fake();
         Storage::fake();
@@ -50,12 +51,19 @@ abstract class IntegrationTestCase extends OrchestraTestCase
             FakeConfig::swap($this->app);
         }
 
-        $this->swap(
-            CopyExportedProjectToStorage::class,
-            new CopyExportedProjectToStorage(Storage::disk(), __DIR__ . '/../stubs/'),
-        );
+        if ($this->shouldFakeListeners) {
+            $this->swap(
+                CopyExportedProjectToStorage::class,
+                new CopyExportedProjectToStorage(Storage::disk(), __DIR__ . '/../../stubs/'),
+            );
+        }
+
+        return parent::setUpTraits();
     }
 
+    /**
+     * @return array<string>
+     */
     protected function getPackageProviders($app): array
     {
         return [LokaliseWebhooksServiceProvider::class];

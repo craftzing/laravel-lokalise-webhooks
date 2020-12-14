@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Craftzing\Laravel\LokaliseWebhooks\Commands;
 
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnexpectedWebhookPayload;
-use Craftzing\Laravel\LokaliseWebhooks\IntegrationTestCase;
+use Craftzing\Laravel\LokaliseWebhooks\Testing\IntegrationTestCase;
 use Exception;
 use Generator;
 use Illuminate\Support\Facades\Event;
