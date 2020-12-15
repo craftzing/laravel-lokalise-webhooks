@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\LokaliseWebhooks\Subscribers;
 
-use Craftzing\Laravel\LokaliseWebhooks\Event;
+use Craftzing\Laravel\LokaliseWebhooks\LokaliseEvent;
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnableToCopyExportFileToStorage;
 use Craftzing\Laravel\LokaliseWebhooks\Testing\Doubles\FakeFilesystem;
 use Craftzing\Laravel\LokaliseWebhooks\Testing\IntegrationTestCase;
@@ -28,7 +28,7 @@ final class CopyExportedProjectToStorageTest extends IntegrationTestCase
     {
         IlluminateEvent::subscribe(CopyExportedProjectToStorage::class);
 
-        IlluminateEvent::dispatch(Event::PROJECT_EXPORTED, new WebhookCall());
+        IlluminateEvent::dispatch(LokaliseEvent::PROJECT_EXPORTED, new WebhookCall());
 
         Queue::assertPushed(CallQueuedListener::class, function (CallQueuedListener $listener) {
             return $listener->class === CopyExportedProjectToStorage::class;

@@ -7,7 +7,7 @@ namespace Craftzing\Laravel\LokaliseWebhooks;
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnexpectedWebhookPayload;
 use Spatie\WebhookClient\Models\WebhookCall;
 
-final class Event
+final class LokaliseEvent
 {
     private const NAMESPACE = 'lokalise-webhooks::';
     public const PROJECT_IMPORTED = self::NAMESPACE . 'project.imported';

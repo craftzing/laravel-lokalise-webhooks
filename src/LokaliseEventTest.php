@@ -12,7 +12,7 @@ use Spatie\WebhookClient\Models\WebhookCall;
 
 use function compact;
 
-final class EventTest extends TestCase
+final class LokaliseEventTest extends TestCase
 {
     private string $eventName;
     private array $payload;
@@ -59,9 +59,9 @@ final class EventTest extends TestCase
     ): void {
         $this->expectExceptionObject($exception);
 
-        $event = Event::fromWebhookCall(new WebhookCall(compact('payload')));
+        $event = LokaliseEvent::fromWebhookCall(new WebhookCall(compact('payload')));
 
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(LokaliseEvent::class, $event);
     }
 
     /**
@@ -69,9 +69,9 @@ final class EventTest extends TestCase
      */
     public function itCanBeConstructedFromAWebhookCall(): void
     {
-        $event = Event::fromWebhookCall($this->webhookCall);
+        $event = LokaliseEvent::fromWebhookCall($this->webhookCall);
 
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(LokaliseEvent::class, $event);
         $this->assertSame("lokalise-webhooks::{$this->eventName}", $event->name());
     }
 
@@ -80,9 +80,9 @@ final class EventTest extends TestCase
      */
     public function itCanBeConstructedFromAPingWebhookCall(): void
     {
-        $event = Event::fromWebhookCall(new WebhookCall(['payload' => ['ping']]));
+        $event = LokaliseEvent::fromWebhookCall(new WebhookCall(['payload' => ['ping']]));
 
-        $this->assertInstanceOf(Event::class, $event);
+        $this->assertInstanceOf(LokaliseEvent::class, $event);
         $this->assertSame("lokalise-webhooks::ping", $event->name());
     }
 
@@ -91,7 +91,7 @@ final class EventTest extends TestCase
      */
     public function itCanBeCastedToAString(): void
     {
-        $event = Event::fromWebhookCall($this->webhookCall);
+        $event = LokaliseEvent::fromWebhookCall($this->webhookCall);
 
         $this->assertSame($event->name(), (string) $event);
     }

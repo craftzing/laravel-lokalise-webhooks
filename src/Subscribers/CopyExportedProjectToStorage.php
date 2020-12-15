@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Craftzing\Laravel\LokaliseWebhooks\Subscribers;
 
-use Craftzing\Laravel\LokaliseWebhooks\Event;
+use Craftzing\Laravel\LokaliseWebhooks\LokaliseEvent;
 use Craftzing\Laravel\LokaliseWebhooks\Exceptions\UnableToCopyExportFileToStorage;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -76,6 +76,6 @@ final class CopyExportedProjectToStorage implements ShouldQueue
 
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(Event::PROJECT_EXPORTED, self::class);
+        $events->listen(LokaliseEvent::PROJECT_EXPORTED, self::class);
     }
 }
