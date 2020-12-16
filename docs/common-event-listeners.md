@@ -1,10 +1,10 @@
 Common event listeners
 ===
 
-Beside allowing you to add your own event listeners, we also provide a limited number of common event listener for you 
-to re-use in any project. In this section, we'll go over the ones we provide out of the box.
+Beside allowing you to add your own event listeners, we also provide a limited number of (optional) common event 
+listeners for you to re-use in any project.
 
-> 💡 Have an idea for a useful common event listener? Feel free to open a
+> 💡 Have an idea for a common event listener? Feel free to open a
 > [PR](https://github.com/craftzing/laravel-lokalise-webhooks/compare)!
 
 ## 🪣 Copying an exported project to storage 
