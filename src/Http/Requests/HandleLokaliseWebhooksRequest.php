@@ -7,15 +7,24 @@ namespace Craftzing\Laravel\LokaliseWebhooks\Http\Requests;
 use Craftzing\Laravel\LokaliseWebhooks\Commands\ProcessLokaliseWebhook;
 use Craftzing\Laravel\LokaliseWebhooks\Config;
 use Craftzing\Laravel\LokaliseWebhooks\Http\LokaliseSignatureValidator;
+use Craftzing\Laravel\LokaliseWebhooks\Http\Middleware\RestrictRequestsToLokaliseIPs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\WebhookProcessor;
 use Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile;
 
-final class HandleLokaliseWebhooksRequest
+final class HandleLokaliseWebhooksRequest extends Controller
 {
+    public function __construct(Config $config)
+    {
+        if ($config->areIpRestrictionsEnabled()) {
+            $this->middleware(RestrictRequestsToLokaliseIPs::class);
+        }
+    }
+
     public function __invoke(Request $request, Config $config): JsonResponse
     {
         $webhookConfig = new WebhookConfig([

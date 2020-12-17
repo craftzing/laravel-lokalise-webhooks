@@ -41,14 +41,28 @@ php artisan migrate
 
 ## ⚙️ Configuration
 
-To verify that incoming requests originate from your Lokalise project, we need to know the `X-Secret` header Lokalise
-will include with every webhook call. Secrets are project-specific and can be found under the webhook integration
-settings of your project on Lokalise (https://app.lokalise.com/settings/{yourProjectId}/#integrations/rest-webhook).
+Lokalise includes a `X-Secret` header with every webhook requests. That secret is specific to the webhook integration 
+and enables us to verify that incoming requests originate from the webhook integration you've set up in the settings of
+your Lokalise project (see https://app.lokalise.com/settings/{yourProjectId}/#integrations/rest-webhook).
 
 Add the `X-Secret` header to your `.env`:
 ```dotenv
-LOKALIZE_X_SECRET=<your-secret> 
+LOKALIZE_X_SECRET=<your-secret>
 ```
+
+As Lokalise does not sign requests, the only way to ensure requests are coming from Lokalise is to set up IP 
+restrictions. Only requests coming from a known Lokalise IP should have access to the webhook handling route. This 
+behaviour is enabled by default, but you can turn it off for development purposes (for example when you're using a 
+tunneling service to expose your local environment).
+
+To turn off IP restrictions, add the following to your `.env`:
+```dotenv
+LOKALIZE_ENABLE_IP_RESTRICTIONS=false
+```
+
+> ⚠️ We highly discourage disabling IP restrictions on production environments. If your application sits behind a load 
+> balancer or any intermediary (reverse) proxy, make sure to list it as a trusted proxy so we can access the real 
+> end-client IP (see https://laravel.com/docs/8.x/requests#configuring-trusted-proxies).
 
 Next, you must specify the route that will handle incoming Lokalise webhook calls. Head over to your app's routes file
 and add the lines below. Under the hood, this will register a `POST` route with a request handler provided by this

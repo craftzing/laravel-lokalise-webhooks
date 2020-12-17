@@ -26,7 +26,7 @@ manage these Lokalise events within a Laravel app.
 
 ## 📝 Changelog
 
-Check out our [Change log](/CHANGELOG.md).
+Check out our [Changelog](/CHANGELOG.md).
 
 ## 🤝 How to contribute
 

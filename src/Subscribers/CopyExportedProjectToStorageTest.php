@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\WebhookClient\Models\WebhookCall;
 use ZipArchive;
 
+use function tap;
+
 final class CopyExportedProjectToStorageTest extends IntegrationTestCase
 {
     private const FAKE_REMOTE_PATH = __DIR__ . '/../../stubs/';
@@ -74,7 +76,7 @@ final class CopyExportedProjectToStorageTest extends IntegrationTestCase
     {
         $this->expectExceptionObject(UnableToCopyExportFileToStorage::streamError());
 
-        $filesystem = FakeFilesystem::failToWrite();
+        $filesystem = tap(new FakeFilesystem(), fn (FakeFilesystem $filesystem) => $filesystem->failToWrite());
         $webhookCall = new WebhookCall([
             'payload' => [
                 'export' => [

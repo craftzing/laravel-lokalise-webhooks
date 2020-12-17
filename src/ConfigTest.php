@@ -16,6 +16,16 @@ final class ConfigTest extends IntegrationTestCase
 {
     protected bool $shouldFakeConfig = false;
 
+    /**
+     * @before
+     */
+    public function setupConfig(): void
+    {
+        $this->afterApplicationCreated(function (): void {
+            config(['lokalise-webhooks.x_secret' => Str::random()]);
+        });
+    }
+
     public function misconfiguredApp(): Generator
     {
         yield 'Missing Lokalise X-Secret' => [
@@ -47,11 +57,33 @@ final class ConfigTest extends IntegrationTestCase
      */
     public function itCanBeResolvedFromTheContainer(): void
     {
-        config(['lokalise-webhooks.x_secret' => $xSecret = Str::random()]);
+        $config = $this->app[Config::class];
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertSame(config('lokalise-webhooks.x_secret'), $config->lokaliseXSecret());
+    }
+
+    /**
+     * @test
+     */
+    public function itEnablesIpRestrictionsByDefault(): void
+    {
+        $config = $this->app[Config::class];
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertTrue($config->areIpRestrictionsEnabled());
+    }
+
+    /**
+     * @test
+     */
+    public function itCanDisableIpRestrictions(): void
+    {
+        config(['lokalise-webhooks.enable_ip_restrictions' => false]);
 
         $config = $this->app[Config::class];
 
         $this->assertInstanceOf(Config::class, $config);
-        $this->assertSame($xSecret, $config->lokaliseXSecret());
+        $this->assertFalse($config->areIpRestrictionsEnabled());
     }
 }

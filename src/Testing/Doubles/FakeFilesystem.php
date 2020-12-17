@@ -16,12 +16,9 @@ final class FakeFilesystem implements Filesystem
         $this->root = __DIR__ . '/../../stubs/fake/path/';
     }
 
-    public static function failToWrite(): self
+    public function failToWrite(): void
     {
-        $instance = new self();
-        $instance->failToWrite = true;
-
-        return $instance;
+        $this->failToWrite = true;
     }
 
     public function put($path, $contents, $options = []): bool
